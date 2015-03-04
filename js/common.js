@@ -361,6 +361,33 @@ $(document).ready(function() {
                 $(this).css('overflow', 'auto');
             });
 
+            shares.fb.click(function () {
+                if (shares.fb.hasClass('disabled'))
+                    return;
+
+                shares.fb.addClass('disabled');
+                $('#share_text').html ('Sharing...');
+
+                FB.api('/me/feed', 'post', { 
+                    message: unescape(text),
+                    link: 'https://apps.facebook.com/the-dash-game/',
+                    picture: 'https://dash.breno.io/img/logo.png',
+                    description: 'DASH',
+                    caption: 'How fast can you dash?'
+                }, function(response) {
+                    if (!response || response.error) {
+                        console.log('Error occured');
+                    } else {
+                        $('#share_text').html ('Shared!');
+
+                        setTimeout(function(){
+                            $('#share_text').html ('Share');
+                            shares.fb.removeClass('disabled');
+                        }, 2000);
+                    }
+                });
+            });
+
             if (score > BEST_SCORE) {
                 $.cookie('best', score, { expires: 365 });
                 window.localStorage.setItem('best', score);
@@ -368,9 +395,6 @@ $(document).ready(function() {
                 best.html(BEST_SCORE);
 
                 window.fb_update_score (score);
-
-                shares.fb.click(function () {
-                });
             }
         },
 

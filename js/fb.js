@@ -2,7 +2,8 @@ window.fbAsyncInit = function() {
   FB.init({
     appId      : '903632352992329',
     xfbml      : true,
-    version    : 'v2.2'
+    version    : 'v2.2',
+    cookie : true
   });
 
   window.fb_update_score = function (score) {
@@ -24,9 +25,11 @@ window.fbAsyncInit = function() {
 
   window.fb_update_leaderboard = function () {
       FB.api(
-          "/903632352992329/scores",
+          "/app/scores?fields=score,user.limit(40)",
           function (response) {
             $('#loading').hide();
+
+            console.log(response);
 
             if (response && !response.error) {
               response = response.data;
@@ -37,6 +40,8 @@ window.fbAsyncInit = function() {
                 ranking.append(
                   '<tr>' + 
                     '<td>' + (i + 1) + '.</td>' +
+                    '<td><img src="http://graph.facebook.com/' + response[i].user.id + 
+                    '/picture?type=square" alt="' + response[i].user.name + '"/></td>' +
                     '<td>' + response[i].user.name + '</td>' +
                     '<td style="text-align: center;">' + response[i].score + '</td>' +
                     '</tr>');
@@ -52,7 +57,6 @@ window.fbAsyncInit = function() {
       FB.api('/me?fields=first_name,picture', function(data) {
         var welcomeBlock = document.getElementById('user_name');
         welcomeBlock.innerHTML = data.first_name + ', ';
-        // console.log(data.picture.data.url);
       });
 
       FB.api(
@@ -68,32 +72,6 @@ window.fbAsyncInit = function() {
       fb_update_leaderboard();
     }
   }
-
-  // function onLogin(response) {
-  //   if (response.status == 'connected') {
-  //     FB.api(
-  //       '/me/scores', 
-  //       'post',
-  //       {score: 100},
-  //       function(response) {
-  //         if (!response) {
-  //            console.log('Error occurred.');
-  //          } else if (response.error) {
-  //            console.log(response.error.message);
-  //          } else {
-  //            console.log('gravou');
-  //          }
-  //       } 
-  //     );
-
-  //     FB.api('/903632352992329/scores', function(data) {
-  //       console.log(data);
-  //       var welcomeBlock = document.getElementById('user_name');
-  //       welcomeBlock.innerHTML = data.user + ', ';
-  //       // console.log(data.picture.data.url);
-  //     });
-  //   }
-  // }
 
   FB.getLoginStatus(function(response) {
     // Check login status on load, and if the user is
