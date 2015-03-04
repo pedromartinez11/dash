@@ -1,4 +1,4 @@
-# Dash Chrome
+# Dash Facebook
 
 This is a branch for developing Dash as a Facebook apps.
 
