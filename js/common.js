@@ -182,8 +182,10 @@ function goDash () {
 
 $(document).ready(function() {
 
-    $('#btn_howto').click(function() { $('#info').fadeIn(); });
-    $('.dismiss').click(function() { $(this).parent().fadeOut(); });
+    $('#btn_howto').click(function() { $('#info').fadeIn('slow', function () {
+        $(this).css('overflow', 'auto');
+    }); });
+    $('.dismiss').click(function() { $(this).parent().fadeOut('slow'); });
 
     W = $(window).width();
     H = $(window).height();
@@ -199,6 +201,16 @@ $(document).ready(function() {
 
     shares.fb = $('#fb_share_score');
     shares.tw = $('#tw_share_score');
+
+    $('#btn_leader').click(function() { 
+        fb_update_leaderboard();
+        $('#no_leaderboard').hide();
+        $('#loading').show();
+
+        $('#leaderboards').fadeIn('slow', function () {
+            $(this).css('overflow', 'auto');
+        }); 
+    });
 
     message = $('#tutorial');
 
@@ -216,13 +228,10 @@ $(document).ready(function() {
         window.open('https://plus.google.com/share?url=' + SITE, 'Dash', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600,left=' + left + ',top=' + top);
     });
 
-    if (fetch ('best') === null)
-        store ('best', 0);
-
     if (fetch ('tutorial') === null)
         store ('tutorial', challenges.length);
 
-    BEST_SCORE = fetch ('best');
+    // BEST_SCORE = fetch ('best');
     tutorial = parseInt(fetch('tutorial'));
 
     if (tutorial !== 0) {
@@ -230,7 +239,7 @@ $(document).ready(function() {
         tutorial_btn.off.toggle();
     }
 
-    best.html(BEST_SCORE);
+    // best.html(BEST_SCORE);
 
     tutorial_btn.on.click(function () {
         tutorial = challenges.length;
@@ -332,7 +341,7 @@ $(document).ready(function() {
             var text = 'I\'ve made ' + score + ' points in Dash! Can you dash faster? #Dash';
             text = escape(text);
 
-            shares.tw.attr('href', 'https://twitter.com/intent/tweet?text=' + text + '&url=' + SITE);
+            // shares.tw.attr('href', 'https://twitter.com/intent/tweet?text=' + text + '&url=' + SITE);
 
             _gaq.push(['_setCustomVar',
               1,                   // This custom var is set to slot #1.  Required parameter.
@@ -348,23 +357,20 @@ $(document).ready(function() {
               elapsed                    // Sets the scope to page-level.  Optional parameter.
            ]);
 
-            // shares.fb.click(function () {
-            //     FB.ui({
-            //         name: 'Dash',
-            //         method: 'share',
-            //         caption: unescape(text),
-            //         href: 'http://dash.breno.io/',
-            //         app_id: '903632352992329'
-            //     }, function(response){});
-            // });
-
-            end_game_view.fadeIn();
+            end_game_view.fadeIn('slow', function () {
+                $(this).css('overflow', 'auto');
+            });
 
             if (score > BEST_SCORE) {
                 $.cookie('best', score, { expires: 365 });
                 window.localStorage.setItem('best', score);
                 BEST_SCORE = score;
                 best.html(BEST_SCORE);
+
+                window.fb_update_score (score);
+
+                shares.fb.click(function () {
+                });
             }
         },
 

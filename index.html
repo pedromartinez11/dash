@@ -18,7 +18,7 @@
     <title>Dash</title>
 
     <link href="img/favicon.png" rel="icon" type="image/x-icon"/>
-    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700|Josefin+Sans:100,400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Josefin+Sans:100,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/css.css"/>
     <link rel="stylesheet" type="text/css" href="css/medias.css"/>
     <link rel="stylesheet" type="text/css" href="css/fontello.css"/>
@@ -27,69 +27,27 @@
     <script type="text/javascript" async src="//platform.twitter.com/widgets.js"></script>
 </head>
 <body>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '903632352992329',
-          xfbml      : true,
-          version    : 'v2.2'
-        });
-
-        function onLogin(response) {
-          if (response.status == 'connected') {
-            FB.api('/me?fields=first_name', function(data) {
-              var welcomeBlock = document.getElementById('fb-welcome');
-              welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
-            });
-          }
-        }
-
-        FB.getLoginStatus(function(response) {
-          // Check login status on load, and if the user is
-          // already logged in, go directly to the welcome message.
-          if (response.status == 'connected') {
-            onLogin(response);
-          } else {
-            // Otherwise, show Login dialog first.
-            FB.login(function(response) {
-              onLogin(response);
-            }, {scope: 'user_friends, email'});
-          }
-        });
-      };
-
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
-    </script>
-
     <div class="wrapper">
         <h1>DASH</h1>
 
         <div class="menu">
-            <div>Your best score is <span id="best"></span></div>
+            <div><b id="user_name"></b> your best score is <span id="best"></span></div>
 
             <a class="main_btn" id="btn_play">Start game</a>
             <a class="main_btn" id="btn_howto">How to play</a>
             <a class="main_btn" id="btn_full">Toggle fullscreen</a>
-            <!-- <a class="main_btn" id="btn_leader" class="disabled">Leaderboard</a> -->
-
-            <a class="fb" id="fb_share"><i class="icon-facebook"></i></a>
-
-            <a class="tw" href="https://twitter.com/intent/tweet?text=How%20fast%20can%20you%20dash%3F&url=http://dash.breno.io/"><i class="icon-twitter"></i></a>
-
-            <a class="gp"><i class="icon-gplus"></i></a>
+            <a class="main_btn" id="btn_leader">Leaderboard</a>
 
             <div class="clear"></div>
         </div>
 
         <div class="clear"></div>
 
-        <div class="copyright"><a href="http://breno.io" target="_blank">Made by Breno</a></div>
+        <div class="copyright">
+            <a href="https://breno.io/" target="_blank">Creator's site</a>
+            <a href="https://dash.breno.io/policy.html" target="_blank">Privacy policy</a>
+            <a href="https://www.facebook.com/the.dash.game" target="_blank">App page</a>
+        </div>
     </div>
 
     <!-- <section id="panel-0" class="preset-0" style="display: block; left:50%;top:0;"><i class="icon-angle-down"></i></section> -->
@@ -113,6 +71,23 @@
         <i id="msg_icon"></i>
     </div>
 
+    <div class="info" id="leaderboards">
+        <span class="dismiss">&times;</span>
+
+        <h2>Leaderboard</h2>
+
+        <div class="centering">
+            <img src="img/load.gif" alt="loading" id="loading" style="border: none;"/>
+        </div>
+
+        <div class="centering" id="no_leaderboard" style="display: none">
+            Scores not available yet!
+        </div>
+
+        <table id="ranking">
+        </table>
+    </div>
+
     <div class="info" id="end_game_view">
         <span class="dismiss">&times;</span>
 
@@ -131,27 +106,15 @@
                 <a id="btn_again">Play again</a>
             </div>
 
-            <div style="display: none;">
-                <a id="fb_share_score"><i class="icon-facebook"></i> Share on Facebook</a>
+            <div>
+                <a id="fb_share_score"><i class="icon-facebook"></i> Share</a>
                 <div class="clear"></div>
             </div>
 
-            <div>
+            <!-- <div>
                 <a id="tw_share_score"><i class="icon-twitter"></i> Share on Twitter</a>
                 <div class="clear"></div>
-            </div> 
-
-            <script type="text/javascript">
-                google_ad_client = "ca-pub-3758610824903714";
-                google_ad_slot = "1970973182";
-                google_ad_width = 250;
-                google_ad_height = 250;
-            </script>
-            <!-- New small Dash -->
-            <script type="text/javascript"
-            src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-            </script>
-
+            </div> --> 
         </div>
     </div>
 
@@ -217,31 +180,32 @@
 
 
     <div class="message" id="tutorial"></div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery.animate-enhanced.min.js"></script>
+    <script type="text/javascript" src="js/keypress-2.1.0.min.js"></script>
+    <script type="text/javascript" src="js/hammer.min.js"></script>
+    <script type="text/javascript" src="js/dash-utils.min.js"></script>
+    <script type="text/javascript" src="js/dash-level.min.js"></script>
+    <script type="text/javascript" src="js/dash-gui.min.js"></script>   
+    <script type="text/javascript" src="js/dash.min.js"></script>
+    <script type="text/javascript" src="js/common.min.js"></script>
+    <script type="text/javascript" async src="js/fb.min.js"></script>
+
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-60178881-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
 </body>
-
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>
-<script type="text/javascript" src="js/jquery.animate-enhanced.min.js"></script>
-<script type="text/javascript" src="js/keypress-2.1.0.min.js"></script>
-<script type="text/javascript" src="js/hammer.min.js"></script>
-<script type="text/javascript" src="js/dash-utils.min.js"></script>
-<script type="text/javascript" src="js/dash-level.min.js"></script>
-<script type="text/javascript" src="js/dash-gui.min.js"></script>
-<script type="text/javascript" src="js/dash.min.js"></script>
-<script type="text/javascript" src="js/common.min.js"></script>
-
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-60178881-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
 
 </html>
